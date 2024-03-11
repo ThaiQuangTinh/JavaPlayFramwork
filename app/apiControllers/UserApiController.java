@@ -1,9 +1,14 @@
 package apiControllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+import play.libs.Json;
 import play.mvc.*;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import models.DataAdapter;
 
@@ -12,8 +17,15 @@ public class UserApiController extends Controller {
     private final DataAdapter da = new DataAdapter();
 
     public Result isValidUser(Http.Request request) {
-        String username = request.getQueryString("username");
-        String password = request.getQueryString("password");
+        JsonNode json = request.body().asJson();
+
+        if (json == null || !json.has("username") || !json.has("password")) {
+            return badRequest("Invalid JSON data");
+        }
+
+        String username = json.get("username").asText();
+        String password = json.get("password").asText();
+
         SQLServerDataSource ds = da.getConnnection();
 
         try (Connection conn = ds.getConnection()) {
@@ -24,16 +36,16 @@ public class UserApiController extends Controller {
 
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
-                        return ok("true");
+                        return ok(Json.toJson(true));
                     } else {
-                        return ok("false");
+                        return ok(Json.toJson(false));
                     }
                 }
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return internalServerError("Internal Server Error");
         }
     }
-
 }

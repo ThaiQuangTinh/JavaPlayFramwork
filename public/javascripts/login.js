@@ -35,29 +35,6 @@ const handlePassword = function() {
 
 handlePassword();
 
-// This function is used to read cookies
-const getCookie = (name) => {
-    const cookieArray = document.cookie.split(';');
-    for (const cookie of cookieArray) {
-        const [cookieName, cookieValue] = cookie.split('=');
-        if (cookieName.trim() === name) {
-            return decodeURIComponent(cookieValue);
-        }
-    }
-    return null;
-};
-
-// This function is used to set username and password
-const setUsAndPw = () => {
-    let username = document.getElementById('username-ip');
-    let password = document.getElementById('password-ip');
-
-    username.value = getCookie('username');
-    password.value = getCookie('password');
-}
-
-setUsAndPw();
-
 // This function is used to get data from login form
 const getData = () => {
     let username = document.getElementById('username-ip').value;
@@ -69,28 +46,34 @@ const getData = () => {
     }
 }
 
-// This function is used to create cookie
-function createCookie(name, value, minutes) {
-    var expires = "";
+//Function used to create cookie
+const createCookieAccount = function(username, password) {
+    let expiryDate = new Date();
+    expiryDate.setTime(expiryDate.getTime() + (720 * 60 * 1000));
+    let expires = "expires=" + expiryDate.toUTCString();
+    document.cookie = `usernameCK=${username}; ${expires}`;
+    document.cookie = `passwordCK=${password}; ${expires}`;
+};
 
-    if (minutes) {
-        var date = new Date();
-        date.setTime(date.getTime() + (minutes * 60 * 1000));
-        expires = "; expires=" + date.toUTCString();
+//Function used to get cookie value of users
+const getCookieValue = function(cookieName) {
+    const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+    for (let cookie of cookies) {
+        const [name, value] = cookie.split('=');
+        if (name === cookieName) {
+            return value;
+        }
     }
-
-    document.cookie = name + "=" + value + expires + "; path=/";
-}
+    return null;
+};
 
 // This function is used to handel when 'remember me' checkbox is checked
 const rememberMe = (username, password) => {
+    console.log(username, password);
     const chkRememberMe = document.getElementById('chk-remember-user');
-    chkRememberMe.addEventListener('change', function() {
-        if (chkRememberMe.checked) {
-            createCookie('username', username, 1);
-            createCookie('password', password, 1);
-        }
-    })
+    if (chkRememberMe.checked) {
+        createCookieAccount(username, password);
+    }
 }
 
 // This function is used to handle when user click to login button
@@ -107,7 +90,16 @@ const handleBtnLoin = () => {
         if ((username !== '' && password !== '')) {
             messageElement.innerText = '';
 
-            fetch(`http://localhost:9000/isValidUser?username=${data.Username}&password=${data.Password}`)
+            fetch(`http://localhost:9000/isValidUser`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                })
                 .then(response => {
                     return response.json();
                 })
@@ -127,3 +119,13 @@ const handleBtnLoin = () => {
 }
 
 handleBtnLoin();
+
+document.addEventListener('DOMContentLoaded', function() {
+    let usernameCk = getCookieValue('usernameCK');
+    let passwordCk = getCookieValue('passwordCK');
+
+    if (usernameCk !== '' && passwordCk !== '') {
+        document.getElementById('username-ip').value = usernameCk;
+        document.getElementById('password-ip').value = passwordCk;
+    }
+});

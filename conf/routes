@@ -10,7 +10,7 @@ POST    /submit                     controllers.LoginController.submit(request :
 GET     /helloUser                  controllers.LoginController.helloUserForm(request :Request)
 
 # API used to get users
-GET    /isValidUser                apiControllers.UserApiController.isValidUser(request :Request)
+POST    /isValidUser                 apiControllers.UserApiController.isValidUser(request:Request)
 
 
 # Map static resources from the /public folder to the /assets URL path
