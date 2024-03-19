@@ -1,0 +1,22 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url(https://media.istockphoto.com/id/1277748423/vi/video/n%E1%BB%81n-gradient-xanh-d%C6%B0%C6%A1ng-v%C3%A0-xanh-nh%E1%BA%A1t-ch%E1%BA%A5t-li%E1%BB%87u-v%C3%B2ng-l%E1%BA%B7p-m%C3%A0u-%C4%91%E1%BA%B9p-g%E1%BB%A3i-nh%E1%BB%9B-%C4%91%E1%BA%BFn-b%E1%BA%A7u-tr%E1%BB%9Di-v%C3%A0-bi%E1%BB%83n.jpg?s=640x640&k=20&c=CLCX1ocTAV6rUeBoTL4u08256AEs3fXNWdCR6af82MU=);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 50px;
+    color:#fff;
+}
