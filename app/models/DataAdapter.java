@@ -3,7 +3,7 @@ package models;
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
 public class DataAdapter {
-    public SQLServerDataSource getConnnection() {
+    public SQLServerDataSource getDataSource() {
         SQLServerDataSource ds = new SQLServerDataSource();
 
         ds.setUser("Liliana");
